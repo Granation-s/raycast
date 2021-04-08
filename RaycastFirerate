@@ -1,0 +1,29 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+namespace UnityStandardAssets.Characters.FirstPerson
+{
+    public class MP5KRaycast : MonoBehaviour
+    {
+        public int DamageAmount = 5;
+        public float TargetDistance;
+        public GameObject BulletHole;
+        private float nextFire = 0.0f;
+        public float firerate;
+
+        void Update()
+        {
+
+            if (Input.GetButton("Fire1") && Time.time > nextFire && AllAmmo.LoadedAmmo >= 1 && AimingInMP5K.mp5kaimng == true && GunFireMP5K.isanimating == false)
+            {
+                nextFire = Time.time + firerate;
+                if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out RaycastHit Shot))
+                {
+                    TargetDistance = Shot.distance;
+                    Shot.transform.SendMessage("DeductPoints", DamageAmount, SendMessageOptions.DontRequireReceiver);
+                    Instantiate(BulletHole, Shot.point, Quaternion.FromToRotation(Vector3.up, Shot.normal));
+                }
+            }
+        }
+    }
+}
